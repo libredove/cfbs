@@ -5,10 +5,12 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "cfbs",
+	"main": "doireally.js",
 	"compatibility_date": "2026-10-06",
 	"assets": {
 		// The path to the directory containing the `index.html` file to be served at `/`
-		"directory": "./public"
+		"directory": "./public",
+		"binding": "SHITFUCK"
 	},
 	"observability": {
 		"enabled": true

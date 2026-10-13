@@ -27,6 +27,7 @@ for (const directory of directories) {
 }
 
 const encoder = new TextEncoder();
+const DATE_WIDTH = 19;
 
 function humanSize(size) {
 	if (size < 1024) return `${size}B`;
@@ -69,7 +70,9 @@ function listing(path, asHtml) {
 		const isDirectory = item.directory;
 		const mode = isDirectory ? "drwxr-xr-x" : "-rw-r--r--";
 		const size = (isDirectory ? "-" : humanSize(item.size)).padStart(sizeWidth);
-		const modified = isDirectory || !item.modified ? " ".repeat(16) : item.modified.padEnd(16).slice(0, 16);
+		const modified = isDirectory || !item.modified
+			? " ".repeat(DATE_WIDTH)
+			: item.modified.padEnd(DATE_WIDTH).slice(0, DATE_WIDTH);
 		const marker = isDirectory ? "/" : "";
 		const label = `${item.name}${marker}`;
 		const prefix = `${mode} 1 blog blog ${size} ${modified} `;

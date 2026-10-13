@@ -26,7 +26,7 @@ async function walk(directory) {
 		entries.push({
 			path: entryPath.split(sep).join("/"),
 			size: info.size,
-			modified: info.mtime.toISOString().slice(0, 16).replace("T", " "),
+			modified: info.mtime.toISOString().slice(0, 19).replace("T", " "),
 		});
 	}
 }

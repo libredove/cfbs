@@ -11,8 +11,7 @@ await mkdir(publicRoot, { recursive: true });
 
 async function walk(directory) {
 	for (const item of await readdir(directory, { withFileTypes: true })) {
-		// A local OpenPGP secret-key file is kept out of public assets and listings.
-		if (item.name === ".gitkeep" || (directory === root && item.name === "about.txt")) continue;
+		if (item.name === ".gitkeep") continue;
 		const absolutePath = join(directory, item.name);
 		if (item.isDirectory()) {
 			await walk(absolutePath);

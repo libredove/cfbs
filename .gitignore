@@ -53,7 +53,6 @@ build/Release
 node_modules/
 content-index.js
 .generated-assets/
-entries/about.txt
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)

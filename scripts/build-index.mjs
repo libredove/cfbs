@@ -11,7 +11,11 @@ await mkdir(publicRoot, { recursive: true });
 
 async function walk(directory) {
 	for (const item of await readdir(directory, { withFileTypes: true })) {
-		if (item.name === ".gitkeep") continue;
+		if (
+			item.name === ".git" ||
+			item.name === ".gitkeep" ||
+			(directory === root && item.name === ".github")
+		) continue;
 		const absolutePath = join(directory, item.name);
 		if (item.isDirectory()) {
 			await walk(absolutePath);

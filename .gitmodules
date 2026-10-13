@@ -1,0 +1,4 @@
+[submodule "entries"]
+	path = entries
+	url = https://github.com/libredove/content.git
+	branch = master

@@ -4,19 +4,46 @@ on:
   push:
     branches:
       - master
+  repository_dispatch:
+    types:
+      - content-updated
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: blog-deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+      - name: Update and record pushed content revision
+        if: github.event_name == 'repository_dispatch'
+        env:
+          CONTENT_SHA: ${{ github.event.client_payload.sha }}
+        run: |
+          if [[ ! "$CONTENT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Invalid or missing content commit SHA" >&2
+            exit 1
+          fi
+          git -C entries fetch --depth=1 origin "$CONTENT_SHA"
+          git -C entries checkout --detach FETCH_HEAD
+          git add entries
+          if ! git diff --cached --quiet; then
+            git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "Update content submodule to ${CONTENT_SHA:0:12}"
+            git push origin HEAD:master
+          fi
       - run: npm ci
       - run: npm run build
       - uses: cloudflare/wrangler-action@v4

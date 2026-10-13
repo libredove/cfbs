@@ -13,6 +13,10 @@ Requests for `/` and nested directories return a dynamically formatted directory
 
 The Worker runtime cannot enumerate its static asset bundle. `npm run build` therefore uses Node's filesystem API to create a small path/size/modified-time index from `entries/`; the Worker uses that index to render listings at request time. This uses no shell commands or listing utilities. `npm run dev` and `npm run deploy` build the index before starting Wrangler.
 
+## Test from a phone or tablet
+
+Run `npm run testlan` on your Mac. Wrangler listens on all network interfaces at port `8787`; open the LAN URL it prints (or `http://<Mac-LAN-IP>:8787/`) on a phone or tablet connected to the same Wi-Fi. Restart the command after changing files under `entries/` so it rebuilds the content index and assets. Stop the local server with `Ctrl+C` when finished.
+
 ## Editing and publishing
 
 On a Mac, add, move, or delete files under `entries/`, then commit and push as usual. From iPhone or iPad, use a Git client such as Working Copy to edit text files, add attachments from Files, commit, and push. The included GitHub Actions workflow deploys each push to `master`; add the GitHub repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` first. You can also run `npm run deploy` from a Mac with Wrangler configured for the Cloudflare account. No upload endpoint is included.

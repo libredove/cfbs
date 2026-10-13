@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-		"build": "node scripts/build-index.mjs",
-		"deploy": "npm run build && wrangler deploy",
-		"dev": "npm run build && wrangler dev",
-		"start": "npm run dev"
+    "build": "node scripts/build-index.mjs",
+    "deploy": "npm run build && wrangler deploy",
+    "dev": "npm run build && wrangler dev",
+    "testlan": "npm run build && wrangler dev --ip 0.0.0.0 --port 8787",
+    "start": "npm run dev"
   },
   "devDependencies": {
     "wrangler": "^4.149.0"

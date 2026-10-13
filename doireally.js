@@ -60,6 +60,7 @@ function listing(path, asHtml) {
 	const current = { path, name: ".", directory: true };
 	const parentPath = path ? path.split("/").slice(0, -1).join("/") : "";
 	const parent = { path: parentPath, name: "..", directory: true };
+	const sizeWidth = Math.max(6, ...children.map((item) => (item.directory ? 1 : humanSize(item.size).length)));
 	const renderedRows = [
 		current,
 		parent,
@@ -67,11 +68,11 @@ function listing(path, asHtml) {
 	].map((item) => {
 		const isDirectory = item.directory;
 		const mode = isDirectory ? "drwxr-xr-x" : "-rw-r--r--";
-		const size = isDirectory ? "-" : humanSize(item.size);
-		const modified = isDirectory || !item.modified ? "             " : item.modified;
+		const size = (isDirectory ? "-" : humanSize(item.size)).padStart(sizeWidth);
+		const modified = isDirectory || !item.modified ? " ".repeat(16) : item.modified.padEnd(16).slice(0, 16);
 		const marker = isDirectory ? "/" : "";
 		const label = `${item.name}${marker}`;
-		const prefix = `${mode} 1 blog blog ${size.padStart(6)} ${modified} `;
+		const prefix = `${mode} 1 blog blog ${size} ${modified} `;
 		const href = `/${escapePath(item.path)}${isDirectory && item.path ? "/" : ""}`;
 		return {
 			plain: `${prefix}${label}`,
@@ -81,7 +82,7 @@ function listing(path, asHtml) {
 	const totalBlocks = Math.ceil(children.reduce((total, item) => total + (item.size ?? 0), 0) / 512);
 	const plainBody = `total ${totalBlocks}\n${renderedRows.map((row) => row.plain).join("\n")}\n`;
 	const body = asHtml
-		? `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Index of /${escapeHtml(path)}</title></head><body><h1>Index of /${escapeHtml(path)}</h1><pre>total ${totalBlocks}\n${renderedRows.map((row) => row.html).join("\n")}\n</pre></body></html>`
+		? `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Index of /${escapeHtml(path)}</title><style>body{margin:1rem}pre{box-sizing:border-box;max-width:100%;overflow-x:auto;white-space:pre;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:clamp(.72rem,2.5vw,1rem)}</style></head><body><h1>Index of /${escapeHtml(path)}</h1><pre>total ${totalBlocks}\n${renderedRows.map((row) => row.html).join("\n")}\n</pre></body></html>`
 		: plainBody;
 	return new Response(body, {
 		headers: {
